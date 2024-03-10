@@ -4,7 +4,7 @@ from extract import *
 import os
 
 
-SECRET = os.getenv("SECRET")
+
 
 #
 app = FastAPI()
@@ -34,23 +34,10 @@ async def demo_post(inp: Msg, background_tasks: BackgroundTasks):
     return {"message": "Success, background task started"}
 """
 
-class Request(BaseModel):
-    meta: dict
-    request: dict
-    session: dict
-    version: str
-
-
-class Response(BaseModel):
-    response: dict
-    session: dict
-    version: str
-
 
 @app.post("/alice_skill")
-def alice_skill(request: Request):
-    response = {
-  "response": {
+def alice_skill():
+    return {"response": {
     "text": "Здравствуйте! Это мы, хороводоведы.",
     "tts": "Здравствуйте! Это мы, хоров+одо в+еды.",
     "card": {
@@ -92,8 +79,6 @@ def alice_skill(request: Request):
             }
         ]
     },
-  "version": "1.0"
-}
-    return response
+  "version": "1.0"}
 
 
