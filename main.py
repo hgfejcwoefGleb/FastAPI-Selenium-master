@@ -49,23 +49,51 @@ class Response(BaseModel):
 
 @app.post("/alice_skill")
 def alice_skill(request: Request):
-    # Получение текста, введенного пользователем
-    user_text = request.request["command"]
-
-    # Формирование ответа
-    response_text = f"Вы сказали: {user_text}"
     response = {
-        "text": response_text,
-        "end_session": False
-    }
-
-    # Формирование ответа для Яндекс.Алисы
-    alice_response = Response(
-        response=response,
-        session=request.session,
-        version=request.version
-    )
-
-    return alice_response
+  "response": {
+    "text": "Здравствуйте! Это мы, хороводоведы.",
+    "tts": "Здравствуйте! Это мы, хоров+одо в+еды.",
+    "card": {
+      "type": "...",
+    },
+    "buttons": [
+        {
+            "title": "Надпись на кнопке",
+            "payload": {},
+            "url": "https://example.com/",
+            "hide": True
+        }
+    ],
+    "end_session": False,
+    "directives": {}
+  },
+  "session_state": {
+      "value": 10
+  },
+  "user_state_update": {
+      "value": 42
+  },
+  "application_state": {
+      "value": 37
+  },
+  "analytics": {
+        "events": [
+            {
+                "name": "custom event"
+            },
+            {
+                "name": "another custom event",
+                "value": {
+                    "field": "some value",
+                    "second field": {
+                        "third field": "custom value"
+                    }
+                }
+            }
+        ]
+    },
+  "version": "1.0"
+}
+    return response
 
 
