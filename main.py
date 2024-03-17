@@ -1,34 +1,36 @@
-from fastapi import FastAPI, BackgroundTasks, HTTPException
-from pydantic import BaseModel
-from extract import *
-import os
+"""
+Это минимальный пример простого навыка, не использующего dialogic
+С основным навыком он не связан
+"""
+from flask import Flask, request
 
-SECRET = os.getenv("SECRET")
-
-#
-app = FastAPI()
+app = Flask(__name__)
 
 
-class Msg(BaseModel):
-    msg: str
-    secret: str
+@app.route('/', methods=['POST'])
+@app.route('/alice/', methods=['POST'])
+def respond():
+    data = request.json
+    command = data.get('request', {}).get('command', '')
+
+    end_session = False
+
+    if 'выход' in command:
+        response_text = 'До свидания!'
+        end_session = True
+    elif command:
+        response_text = f'Вы сказали {command}'
+    else:
+        response_text = 'Привет! Вы ничего не сказали.'
+
+    response = {
+        'response': {
+            'text': response_text,
+            'end_session ': end_session
+        },
+        'version': '1.0'
+    }
+    return response
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World. Welcome to FastAPI!"}
-
-
-@app.get("/homepage")
-async def demo_get():
-    driver = createDriver()
-
-    homepage = getGoogleHomepage(driver)
-    driver.close()
-    return homepage
-
-
-@app.post("/backgroundDemo")
-async def demo_post(inp: Msg, background_tasks: BackgroundTasks):
-    background_tasks.add_task(doBackgroundTask, inp)
-    return {"message": "Success, background task started"}
+app.run(host='0.0.0.0', port=5000, debug=True)
