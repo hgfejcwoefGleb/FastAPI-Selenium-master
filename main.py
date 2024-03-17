@@ -1,35 +1,28 @@
-"""
-Это минимальный пример простого навыка, не использующего dialogic
-С основным навыком он не связан
-"""
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    req = request.get_json(force=True)
+    action = req.get('request', {}).get('command')
 
-@app.post("/alice")
-def handler(event, context):
-    """
-    Entry-point for Serverless Function.
-    :param event: request payload.
-    :param context: information about current execution context.
-    :return: response to be serialized as JSON.
-    """
-    text = 'Hello! I\'ll repeat anything you say to me.'
-    if 'request' in event and \
-            'original_utterance' in event['request'] \
-            and len(event['request']['original_utterance']) > 0:
-        text = event['request']['original_utterance']
-    return {
-        'version': event['version'],
-        'session': event['session'],
+    if action == 'привет':
+        response_text = 'Привет! Как я могу помочь?'
+    elif action == 'пока':
+        response_text = 'Пока! Возвращайтесь еще!'
+    else:
+        response_text = 'Извините, я не понял ваш запрос.'
+
+    response = {
         'response': {
-            # Respond with the original request or welcome the user if this is the beginning of the dialog and the request has not yet been made.
-            'text': text,
-            # Don't finish the session after this response.
-            'end_session': 'false'
+            'text': response_text,
+            'end_session': False
         },
+        'version': req['version']
     }
 
+    return jsonify(response)
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
