@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(force=True)
@@ -23,6 +24,7 @@ def webhook():
     }
 
     return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
