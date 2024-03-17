@@ -7,7 +7,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST'])  #
 def respond():
     data = request.json
     command = data.get('request', {}).get('command', '')
